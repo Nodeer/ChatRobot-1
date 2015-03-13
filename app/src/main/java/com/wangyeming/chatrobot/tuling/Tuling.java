@@ -7,6 +7,7 @@ package com.wangyeming.chatrobot.tuling;
  */
 public class Tuling {
 
+    private final static String API_URI = "http://www.tuling123.com/openapi/api";
     private final static String TULING_KEY = "fa3747334ed3f1a1520238ffa32ea415";
 
     private String info;    //消息内容
@@ -97,6 +98,22 @@ public class Tuling {
         return lat;
     }
 
-    public void generateUri() {
+    /**
+     * 返回生成的uri
+     * @return
+     */
+    public String generateUri() {
+        String uri = API_URI + "?" + "key=" + TULING_KEY + "&" + "info=" + this.getInfo()
+                + "&" + "userid=" + this.getUserId();
+        if(this.getLoc() != null) {
+            uri = uri + "&" + "loc=" + this.getLoc();
+        }
+        if(this.getLon() != null) {
+            uri = uri + "&" + "lon=" + this.getLon();
+        }
+        if(this.getLat() != null) {
+            uri = uri + "&" + "lat=" + this.getLat();
+        }
+        return uri;
     }
 }
