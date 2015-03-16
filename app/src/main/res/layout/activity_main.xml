@@ -14,7 +14,7 @@
     <include
         android:id="@+id/input_line"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="60dp"
         android:layout_gravity="bottom"
         layout="@layout/input_layout"/>
 

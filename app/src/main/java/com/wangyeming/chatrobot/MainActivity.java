@@ -1,6 +1,8 @@
 package com.wangyeming.chatrobot;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +11,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.alibaba.fastjson.JSON;
@@ -36,22 +41,18 @@ public class MainActivity extends ActionBarActivity {
     private ConversationAdapter mAdapter;
     private List<Map<String, Object>> conversationDisplay = new ArrayList<>();
 
+    private LinearLayout linearLayout;
+    private EditText editText;
+    private Button sendButton;
+    private ImageButton addButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRecyclerView(); //设置聊天recyclerView
         setInput();  //设置输入框属性
-        /*new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                String response = getResponse();
-                parse(response);
-            }
-        }).start();*/
-        welcomeMessage();  //显示欢迎消息
-        mAdapter.notifyDataSetChanged();
+        displayMessage(WELCOME_MESSAGE, true);  //显示欢迎消息
     }
 
 
@@ -90,35 +91,22 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /**
-     * 设置欢迎语
+     * 设置输入框
      */
-    public void welcomeMessage() {
-        Map<String, Object> conversationMap = new HashMap<>();
-        conversationMap.put("isRobot", true);
-        conversationMap.put("message", WELCOME_MESSAGE);
-        Long currentTimeMillis = System.currentTimeMillis(); //获取当前时间
-        SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//24小时制
-        String LgTime = sdFormat.format(currentTimeMillis);
-        conversationMap.put("date", LgTime);
-        conversationMap.put("avatar", R.mipmap.cat2);
-        conversationDisplay.add(conversationMap);
-    }
-
     public void setInput() {
-        final LinearLayout linearLayout = (LinearLayout) findViewById(R.id.input_line);
-        final EditText editText = (EditText) findViewById(R.id.input);
+        linearLayout = (LinearLayout) findViewById(R.id.input_line);
+        editText = (EditText) findViewById(R.id.input);
+        sendButton = (Button) findViewById(R.id.send_button);
+        addButton = (ImageButton) findViewById(R.id.add_button);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 int lines = editText.getLineCount();
                 float dp;
-                if (lines > 2 && lines <= 4) {
-                    dp = 70 + (lines - 2) * 35;
-                } else if(lines >4) {
-                    dp = 140;
-                }
-                else {
-                    dp = 70;
+                if (lines <= 4) {
+                    dp = 60 + (lines - 1) * 60;
+                } else{
+                    dp = 200;
                 }
                 int px = DensityUtil.dip2px(MainActivity.this, dp);
                 Log.d("wym", "px " + px + " dp " + dp);
@@ -126,7 +114,13 @@ public class MainActivity extends ActionBarActivity {
             }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                if(s.length() == 0) {
+                    addButton.setVisibility(View.VISIBLE);
+                    sendButton.setVisibility(View.GONE);
+                } else {
+                    addButton.setVisibility(View.GONE);
+                    sendButton.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -136,9 +130,9 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
-    public String getResponse() {
+    public String getResponse(String sendMessage) {
         Tuling tuling = new Tuling();
-        tuling.setInfo("南京今天天气");
+        tuling.setInfo(sendMessage);
         tuling.setUserId("123456");
         String uri = tuling.generateUri();
         HttpHelp httpHelp = new HttpHelp();
@@ -154,7 +148,7 @@ public class MainActivity extends ActionBarActivity {
     public void parse(String response) {
         TulingJson tulingJson = JSON.parseObject(response, TulingJson.class);
         String code = tulingJson.code;
-        Log.d("wym", "code " + code);
+        Log.d("wym", "response " + response);
         switch (code) {
             case "100000":
                 //文本类数据
@@ -205,5 +199,64 @@ public class MainActivity extends ActionBarActivity {
                 //服务器数据格式异常
                 break;
         }
+    }
+
+    /**
+     * 发送消息
+     * @param view
+     */
+    public void sendMessage(View view) {
+        final String message = editText.getText().toString();
+        displayMessage(message, false);
+        editText.setText(null); //清空输入框
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                String response = getResponse(message);
+                Message message = Message.obtain();
+                message.obj = response;
+                MainActivity.this.handler1.sendMessage(message);
+            }
+        }).start();
+    }
+
+    private Handler handler1 = new Handler() {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            String response = msg.obj.toString();
+            parse(response);
+        }
+    };
+
+    /**
+     * 获取当前时间
+     * @return
+     */
+    public String getCurrentTime() {
+        Long currentTimeMillis = System.currentTimeMillis(); //获取当前时间
+        SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//24小时制
+        String LgTime = sdFormat.format(currentTimeMillis);
+        return LgTime;
+    }
+
+    /**
+     * 显示消息
+     * @param sendMessage
+     * @param isRobot
+     */
+    public void displayMessage(String sendMessage, Boolean isRobot) {
+        Map<String, Object> conversationMap = new HashMap<>();
+        conversationMap.put("isRobot", isRobot);
+        conversationMap.put("message", sendMessage);
+        String LgTime = getCurrentTime();
+        conversationMap.put("date", LgTime);
+        if(isRobot) {
+            conversationMap.put("avatar", R.mipmap.cat2);
+        } else  {
+            conversationMap.put("avatar", R.mipmap.cat1);
+        }
+        conversationDisplay.add(conversationMap);
+        mAdapter.notifyDataSetChanged();
     }
 }
