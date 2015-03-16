@@ -1,11 +1,13 @@
 package com.wangyeming.chatrobot;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -30,12 +32,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 
 public class MainActivity extends ActionBarActivity {
 
     private final String WELCOME_MESSAGE = "喵，有什么要请教我的？";
 
+    private String userId;
     private RecyclerView recyclerView;
     private LinearLayoutManager mLayoutManager;
     private ConversationAdapter mAdapter;
@@ -50,6 +54,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setUserId();
         setRecyclerView(); //设置聊天recyclerView
         setInput();  //设置输入框属性
         displayMessage(WELCOME_MESSAGE, true);  //显示欢迎消息
@@ -76,6 +81,25 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * 设置userId
+     */
+    public void setUserId() {
+        TelephonyManager telephonemanager = (TelephonyManager)
+                this.getSystemService(Context.TELEPHONY_SERVICE);
+        try {
+            String IMSI = telephonemanager.getSubscriberId();  //获取手机国际识别码IMEI
+            userId = "chatRobot" + IMSI;
+            Log.d("wym", IMSI);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Random random = new Random(100);
+            Long currentTimeMillis = System.currentTimeMillis();
+            userId = random.toString() + currentTimeMillis.toString();
+        }
+
     }
 
     /**
@@ -109,7 +133,6 @@ public class MainActivity extends ActionBarActivity {
                     dp = 200;
                 }
                 int px = DensityUtil.dip2px(MainActivity.this, dp);
-                Log.d("wym", "px " + px + " dp " + dp);
                 linearLayout.getLayoutParams().height = px;
             }
 
@@ -133,7 +156,7 @@ public class MainActivity extends ActionBarActivity {
     public String getResponse(String sendMessage) {
         Tuling tuling = new Tuling();
         tuling.setInfo(sendMessage);
-        tuling.setUserId("123456");
+        tuling.setUserId(userId);
         String uri = tuling.generateUri();
         HttpHelp httpHelp = new HttpHelp();
         String response = "";
@@ -148,10 +171,11 @@ public class MainActivity extends ActionBarActivity {
     public void parse(String response) {
         TulingJson tulingJson = JSON.parseObject(response, TulingJson.class);
         String code = tulingJson.code;
-        Log.d("wym", "response " + response);
         switch (code) {
             case "100000":
                 //文本类数据
+                String text = tulingJson.text;
+                displayMessage(text, true);
                 break;
             case "200000":
                 //网址类数据
@@ -254,7 +278,7 @@ public class MainActivity extends ActionBarActivity {
         if(isRobot) {
             conversationMap.put("avatar", R.mipmap.cat2);
         } else  {
-            conversationMap.put("avatar", R.mipmap.cat1);
+            conversationMap.put("avatar", R.mipmap.xiamu01);
         }
         conversationDisplay.add(conversationMap);
         mAdapter.notifyDataSetChanged();
