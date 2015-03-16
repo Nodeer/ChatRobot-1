@@ -2,6 +2,8 @@ package com.wangyeming.chatrobot.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +42,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         }
     }
 
-    public ConversationAdapter(Context context, List<Map<String, Object>> conversationDisplay ) {
+    public ConversationAdapter(Context context, List<Map<String, Object>> conversationDisplay) {
         mInflater = LayoutInflater.from(context);
         this.conversationDisplay = conversationDisplay;
     }
@@ -68,16 +70,29 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         String message = (String) conversationDisplay.get(i).get("message");
         String date = (String) conversationDisplay.get(i).get("date");
         int avatar = (int) conversationDisplay.get(i).get("avatar");
-        if(isRobot) {
+        Boolean isHtml = (Boolean) conversationDisplay.get(i).get("isHtml");
+        if (isRobot) {
             vh.left_layout.setVisibility(View.VISIBLE);
             vh.right_layout.setVisibility(View.GONE);
-            vh.left_tv1.setText(message);
+            if (isHtml) {
+                vh.left_tv1.setText(Html.fromHtml(message));
+                vh.left_tv1.setMovementMethod(LinkMovementMethod.getInstance());//超链接可点击
+                //vh.left_tv1.setMovementMethod(ScrollingMovementMethod.getInstance());//滚动
+            } else {
+                vh.left_tv1.setText(message);
+            }
             vh.left_tv2.setText(date);
             vh.left_imageView.setImageResource(avatar);
         } else {
             vh.left_layout.setVisibility(View.GONE);
             vh.right_layout.setVisibility(View.VISIBLE);
-            vh.right_tv1.setText(message);
+            if (isHtml) {
+                vh.right_tv1.setText(Html.fromHtml(message));
+                vh.right_tv1.setMovementMethod(LinkMovementMethod.getInstance());//超链接可点击
+                //vh.right_tv2.setMovementMethod(ScrollingMovementMethod.getInstance());//滚动
+            } else {
+                vh.right_tv1.setText(message);
+            }
             vh.right_tv2.setText(date);
             vh.right_imageView.setImageResource(avatar);
         }
@@ -87,4 +102,5 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     public int getItemCount() {
         return conversationDisplay.size();
     }
+
 }

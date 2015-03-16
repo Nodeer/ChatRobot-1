@@ -23,6 +23,7 @@ import com.alibaba.fastjson.JSON;
 import com.wangyeming.chatrobot.adapter.ConversationAdapter;
 import com.wangyeming.chatrobot.http.HttpHelp;
 import com.wangyeming.chatrobot.tuling.Tuling;
+import com.wangyeming.chatrobot.tuling.json.Lists;
 import com.wangyeming.chatrobot.tuling.json.TulingJson;
 import com.wangyeming.chatrobot.util.DensityUtil;
 
@@ -57,7 +58,7 @@ public class MainActivity extends ActionBarActivity {
         setUserId();
         setRecyclerView(); //设置聊天recyclerView
         setInput();  //设置输入框属性
-        displayMessage(WELCOME_MESSAGE, true);  //显示欢迎消息
+        displayMessage(WELCOME_MESSAGE, true, false);  //显示欢迎消息
     }
 
 
@@ -109,6 +110,7 @@ public class MainActivity extends ActionBarActivity {
         recyclerView = (RecyclerView) findViewById(R.id.con_recycler);
         recyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ConversationAdapter(this, conversationDisplay);
         recyclerView.setAdapter(mAdapter);
@@ -129,7 +131,7 @@ public class MainActivity extends ActionBarActivity {
                 float dp;
                 if (lines <= 4) {
                     dp = 60 + (lines - 1) * 60;
-                } else{
+                } else {
                     dp = 200;
                 }
                 int px = DensityUtil.dip2px(MainActivity.this, dp);
@@ -137,7 +139,7 @@ public class MainActivity extends ActionBarActivity {
             }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length() == 0) {
+                if (s.length() == 0) {
                     addButton.setVisibility(View.VISIBLE);
                     sendButton.setVisibility(View.GONE);
                 } else {
@@ -153,6 +155,11 @@ public class MainActivity extends ActionBarActivity {
         });
     }
 
+    /**
+     * 获取图灵机器人响应
+     * @param sendMessage
+     * @return
+     */
     public String getResponse(String sendMessage) {
         Tuling tuling = new Tuling();
         tuling.setInfo(sendMessage);
@@ -168,23 +175,30 @@ public class MainActivity extends ActionBarActivity {
         return response;
     }
 
+    /**
+     * 解析响应消息
+     * @param response
+     */
     public void parse(String response) {
         TulingJson tulingJson = JSON.parseObject(response, TulingJson.class);
         String code = tulingJson.code;
+        String text = tulingJson.text;
         switch (code) {
             case "100000":
                 //文本类数据
-                String text = tulingJson.text;
-                displayMessage(text, true);
+                displayMessage(text, true, false);
                 break;
             case "200000":
                 //网址类数据
+                displayUrl(tulingJson);
+
                 break;
             case "302000":
-                //应用、软件、下载
+                //新闻
+                displayNews(tulingJson);
                 break;
             case "304000":
-                //新闻
+                //应用、软件、下载
                 break;
             case "305000":
                 //列车
@@ -231,8 +245,9 @@ public class MainActivity extends ActionBarActivity {
      */
     public void sendMessage(View view) {
         final String message = editText.getText().toString();
-        displayMessage(message, false);
+        displayMessage(message, false, false);
         editText.setText(null); //清空输入框
+        editText.clearFocus();
         new Thread(new Runnable() {
 
             @Override
@@ -269,10 +284,11 @@ public class MainActivity extends ActionBarActivity {
      * @param sendMessage
      * @param isRobot
      */
-    public void displayMessage(String sendMessage, Boolean isRobot) {
+    public void displayMessage(String sendMessage, Boolean isRobot, Boolean isHtml) {
         Map<String, Object> conversationMap = new HashMap<>();
         conversationMap.put("isRobot", isRobot);
         conversationMap.put("message", sendMessage);
+        conversationMap.put("isHtml", isHtml);
         String LgTime = getCurrentTime();
         conversationMap.put("date", LgTime);
         if(isRobot) {
@@ -280,7 +296,44 @@ public class MainActivity extends ActionBarActivity {
         } else  {
             conversationMap.put("avatar", R.mipmap.xiamu01);
         }
-        conversationDisplay.add(conversationMap);
+        conversationDisplay.add(0, conversationMap);
+        //conversationDisplay.add(conversationMap);
         mAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * 显示链接
+     * @param tulingJson
+     */
+    public void displayUrl(TulingJson tulingJson) {
+        String text = tulingJson.text;
+        String display = "<html><head><title>" + text + "</title></head>";
+        String url = tulingJson.url;
+        display = display + "<body><p><strong><a href=\"" + url + "\">点此链接</a></strong></p>";
+        displayMessage(display, true, true);
+    }
+
+    /**
+     * 显示新闻
+     * @param tulingJson
+     */
+    public void displayNews(TulingJson tulingJson) {
+        String text = tulingJson.text;
+        String display = "<html><head><title>" + text + "</title></head>";
+        for(Lists list : tulingJson.list) {
+            String article = list.article;
+            String source = list.source;
+            String detailUrl = list.detailurl;
+            String icon = list.icon;
+            display = display + "<body><p><strong><a href=\"" + detailUrl + "\">" + article
+                    + "</a></strong></p>";
+            if(!icon.equals("")) {
+                display = display + "<img src=\"" + icon + "\"/>" + "</body></html>";
+            } else {
+                display = display + "</html>";
+            }
+        }
+        Log.d("wym", display);
+        displayMessage(display, true, true);//显示为html
     }
 }
