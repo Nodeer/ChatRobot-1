@@ -182,16 +182,15 @@ public class MainActivity extends ActionBarActivity {
     public void parse(String response) {
         TulingJson tulingJson = JSON.parseObject(response, TulingJson.class);
         String code = tulingJson.code;
-        String text = tulingJson.text;
         switch (code) {
             case "100000":
                 //文本类数据
+                String text = tulingJson.text;
                 displayMessage(text, true, false);
                 break;
             case "200000":
                 //网址类数据
                 displayUrl(tulingJson);
-
                 break;
             case "302000":
                 //新闻
@@ -199,15 +198,19 @@ public class MainActivity extends ActionBarActivity {
                 break;
             case "304000":
                 //应用、软件、下载
+                displayApp(tulingJson);
                 break;
             case "305000":
                 //列车
+                displayTraning(tulingJson);
                 break;
             case "306000":
                 //航班
+                displayFight(tulingJson);
                 break;
             case "308000":
                 //菜谱、视频、小说
+                displaySomething(tulingJson);
                 break;
             case "309000":
                 //酒店
@@ -309,8 +312,31 @@ public class MainActivity extends ActionBarActivity {
         String text = tulingJson.text;
         String display = "<html><head><title>" + text + "</title></head>";
         String url = tulingJson.url;
-        display = display + "<body><p><strong><a href=\"" + url + "\">点此链接</a></strong></p>";
+        display = display + "<body><p><strong><a href=\"" + url + "\">点此链接</a></strong></p>"
+                    + "</body></html>";
         displayMessage(display, true, true);
+    }
+
+    /**
+     * 下载应用
+     * @param tulingJson
+     */
+    public void displayApp(TulingJson tulingJson) {
+        String text = tulingJson.text;
+        String display = "<html><head><title>" + text + "</title></head><body>";
+        for(Lists list : tulingJson.list) {
+            String name = list.name;
+            String count = list.count;
+            String detailUrl = list.detailurl;
+            String icon = list.icon;
+            display = display + "<p><strong><a href=\"" + detailUrl + "\">" + name
+                    + "</a></strong></p>";
+            if(!icon.equals("")) {
+                display = display + "<img src=\"" + icon + "\"/>";
+            }
+        }
+        display = display + "</body></html>";
+        displayMessage(display, true, true);//显示为html
     }
 
     /**
@@ -319,21 +345,81 @@ public class MainActivity extends ActionBarActivity {
      */
     public void displayNews(TulingJson tulingJson) {
         String text = tulingJson.text;
-        String display = "<html><head><title>" + text + "</title></head>";
+        String display = "<html><head><title>" + text + "</title></head><body>";
         for(Lists list : tulingJson.list) {
             String article = list.article;
             String source = list.source;
             String detailUrl = list.detailurl;
             String icon = list.icon;
-            display = display + "<body><p><strong><a href=\"" + detailUrl + "\">" + article
+            display = display + "<p><strong><a href=\"" + detailUrl + "\">" + article
                     + "</a></strong></p>";
             if(!icon.equals("")) {
-                display = display + "<img src=\"" + icon + "\"/>" + "</body></html>";
-            } else {
-                display = display + "</html>";
+                display = display + "<img src=\"" + icon + "\"/>";
             }
         }
+        display = display + "</body></html>";
+        displayMessage(display, true, true);//显示为html
+    }
+
+    /**
+     * 显示列车信息
+     * @param tulingJson
+     */
+    public void displayTraning(TulingJson tulingJson) {
+        String text = tulingJson.text;
+        /*
+        String display = "<html><head><title>" + text + "</title></head>"
+                + "<body><table border=1><tr><td>班次</td>" +
+                "<td>起点站</td><td>终点站</td><td>起始时间</td><td>到站时间</td>";
+        for(Lists list : tulingJson.list) {
+            String trainNum = list.trainnum;
+            String start = list.start;
+            String terminal = list.terminal;
+            String starttime = list.starttime;
+            String endtime = list.endtime;
+            String detailUrl = list.detailurl;
+            String icon = list.icon;
+            display = display + "<tr><td>" + trainNum + "</td><td>" + start + "</td><td>"
+                    + terminal + "</td><td>" + starttime
+                    + "</td><td>" + endtime + "</td>";
+        }
+        display = display + "</table></body></html>";
+        */
+        String display = "<html><head><title>" + text + "</title></head>";
+        String url = "";
+        for(Lists list : tulingJson.list) {
+            String detailUrl = list.detailurl;
+            url = detailUrl;
+        }
+        display = display + "<body><p><strong><a href=\"" + url + "\">点此链接</a></strong></p>"
+                + "</body></html>";
         Log.d("wym", display);
         displayMessage(display, true, true);//显示为html
+    }
+
+    /**
+     * 显示航班信息
+     * @param tulingJson
+     */
+    public void displayFight(TulingJson tulingJson) {
+        String text = tulingJson.text;
+        String display = "<html><head><title>" + text + "</title></head>";
+        String url = "";
+        for(Lists list : tulingJson.list) {
+            String detailUrl = list.detailurl;
+            url = detailUrl;
+        }
+        display = display + "<body><p><strong><a href=\"" + url + "\">点此链接</a></strong></p>"
+                + "</body></html>";
+        Log.d("wym", display);
+        displayMessage(display, true, true);//显示为html
+    }
+
+    /**
+     * 显示 菜谱、视频、小说
+     * @param tulingJson
+     */
+    public void displaySomething(TulingJson tulingJson) {
+
     }
 }

@@ -33,6 +33,7 @@
             android:textColor="#FFFFFF"
             android:textSize="14sp" />
 
+
         <TextView
             android:id="@+id/left_date"
             android:layout_width="0dip"
