@@ -45,7 +45,8 @@ import java.util.Random;
 
 public class MainActivity extends ActionBarActivity {
 
-    private final String WELCOME_MESSAGE = "喵，有什么要请教我的？";
+    private final String WELCOME_MESSAGE = "喵，有什么要请教我的？你可以陪我聊天，或者问我你想知道的问题" +
+            "查火车，天气，价格，菜谱...，喵，我简直太厉害了，咩哈哈哈！";
 
     private String userId;
     private RecyclerView recyclerView;
