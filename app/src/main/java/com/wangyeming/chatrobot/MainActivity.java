@@ -1,7 +1,11 @@
 package com.wangyeming.chatrobot;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -62,6 +66,10 @@ public class MainActivity extends ActionBarActivity {
         setRecyclerView(); //设置聊天recyclerView
         setInput();  //设置输入框属性
         displayMessage(WELCOME_MESSAGE, true, false);  //显示欢迎消息
+        //检查网络状态
+        if (!isConnected(getApplicationContext())) {
+            setNetworkMethod(this);
+        }
     }
 
 
@@ -159,6 +167,7 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * 获取图灵机器人响应
+     *
      * @param sendMessage
      * @return
      */
@@ -172,7 +181,9 @@ public class MainActivity extends ActionBarActivity {
         Response response = null;
         try {
             response = httpHelp.get(uri);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            Toast.makeText(MainActivity.this,
+                    "网络异常" , Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
         return response;
@@ -180,79 +191,91 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * 解析响应消息
+     *
      * @param response
      */
     public void parse(String response) {
         Log.d("wym", response);
-        TulingJson tulingJson = JSON.parseObject(response, TulingJson.class);
-        String code = tulingJson.code;
-        switch (code) {
-            case "100000":
-                //文本类数据
-                String text = tulingJson.text;
-                displayMessage(text, true, false);
-                break;
-            case "200000":
-                //网址类数据
-                displayUrl(tulingJson);
-                break;
-            case "302000":
-                //新闻
-                displayNews(tulingJson);
-                break;
-            case "304000":
-                //应用、软件、下载
-                displayApp(tulingJson);
-                break;
-            case "305000":
-                //列车
-                displayTraning(tulingJson);
-                break;
-            case "306000":
-                //航班
-                displayFight(tulingJson);
-                break;
-            case "308000":
-                //菜谱、视频、小说
-                displaySomething(tulingJson);
-                break;
-            case "309000":
-                //酒店
-                displayHotel(tulingJson);
-                break;
-            case "311000":
-                //价格
-                displayPrice(tulingJson);
-                break;
-            case "40001":
-                //key的长度错误（32位）
-                break;
-            case "40002":
-                //请求内容为空
-                break;
-            case "40003":
-                //key错误或帐号未激活
-                break;
-            case "40004":
-                //当天请求次数已用完
-                break;
-            case "40005":
-                //暂不支持该功能
-                break;
-            case "40006":
-                //服务器升级中
-                break;
-            case "40007":
-                //服务器数据格式异常
-                break;
+        try {
+            TulingJson tulingJson = JSON.parseObject(response, TulingJson.class);
+            String code = tulingJson.code;
+            switch (code) {
+                case "100000":
+                    //文本类数据
+                    String text = tulingJson.text;
+                    displayMessage(text, true, false);
+                    break;
+                case "200000":
+                    //网址类数据
+                    displayUrl(tulingJson);
+                    break;
+                case "302000":
+                    //新闻
+                    displayNews(tulingJson);
+                    break;
+                case "304000":
+                    //应用、软件、下载
+                    displayApp(tulingJson);
+                    break;
+                case "305000":
+                    //列车
+                    displayTraning(tulingJson);
+                    break;
+                case "306000":
+                    //航班
+                    displayFight(tulingJson);
+                    break;
+                case "308000":
+                    //菜谱、视频、小说
+                    displaySomething(tulingJson);
+                    break;
+                case "309000":
+                    //酒店
+                    displayHotel(tulingJson);
+                    break;
+                case "311000":
+                    //价格
+                    displayPrice(tulingJson);
+                    break;
+                case "40001":
+                    //key的长度错误（32位）
+                    break;
+                case "40002":
+                    //请求内容为空
+                    break;
+                case "40003":
+                    //key错误或帐号未激活
+                    break;
+                case "40004":
+                    //当天请求次数已用完
+                    break;
+                case "40005":
+                    //暂不支持该功能
+                    break;
+                case "40006":
+                    //服务器升级中
+                    break;
+                case "40007":
+                    //服务器数据格式异常
+                    break;
+            }
+        } catch (Exception e) {
+            Toast.makeText(MainActivity.this,
+                    "网络异常，请检查网络是否被重定向或未登录", Toast.LENGTH_SHORT).show();
         }
     }
 
     /**
      * 发送消息
+     *
      * @param view
      */
     public void sendMessage(View view) {
+        //检查网络状态
+        if (!isConnected(getApplicationContext())) {
+            setNetworkMethod(this);
+            return;
+        }
         final String message = editText.getText().toString();
         displayMessage(message, false, false);
         editText.setText(null); //清空输入框
@@ -266,11 +289,12 @@ public class MainActivity extends ActionBarActivity {
                 String response_string = null;
                 try {
                     response_code = response.code();
+                    Log.d("wym", "response_code "+ response_code);
                     response_string = response.body().string();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if(response_code == 200) {
+                if (response_code == 200) {
                     Message message = Message.obtain();
                     message.obj = response_string;
                     MainActivity.this.handler1.sendMessage(message);
@@ -292,6 +316,7 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * 获取当前时间
+     *
      * @return
      */
     public String getCurrentTime() {
@@ -303,6 +328,7 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * 显示消息
+     *
      * @param sendMessage
      * @param isRobot
      */
@@ -313,9 +339,9 @@ public class MainActivity extends ActionBarActivity {
         conversationMap.put("isHtml", isHtml);
         String LgTime = getCurrentTime();
         conversationMap.put("date", LgTime);
-        if(isRobot) {
+        if (isRobot) {
             conversationMap.put("avatar", R.mipmap.cat2);
-        } else  {
+        } else {
             conversationMap.put("avatar", R.mipmap.xiamu01);
         }
         conversationDisplay.add(0, conversationMap);
@@ -325,6 +351,7 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * 显示链接
+     *
      * @param tulingJson
      */
     public void displayUrl(TulingJson tulingJson) {
@@ -332,25 +359,26 @@ public class MainActivity extends ActionBarActivity {
         String display = "<html><head><title>" + text + "</title></head>";
         String url = tulingJson.url;
         display = display + "<body><p><strong><a href=\"" + url + "\">点此链接</a></strong></p>"
-                    + "</body></html>";
+                + "</body></html>";
         displayMessage(display, true, true);
     }
 
     /**
      * 下载应用
+     *
      * @param tulingJson
      */
     public void displayApp(TulingJson tulingJson) {
         String text = tulingJson.text;
         String display = "<html><head><title>" + text + "</title></head><body>";
-        for(Lists list : tulingJson.list) {
+        for (Lists list : tulingJson.list) {
             String name = list.name;
             String count = list.count;
             String detailUrl = list.detailurl;
             String icon = list.icon;
             display = display + "<p><strong><a href=\"" + detailUrl + "\">" + name
                     + "</a></strong></p>";
-            if(!icon.equals("")) {
+            if (!icon.equals("")) {
                 display = display + "<img src=\"" + icon + "\"/>";
             }
         }
@@ -360,19 +388,20 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * 显示新闻
+     *
      * @param tulingJson
      */
     public void displayNews(TulingJson tulingJson) {
         String text = tulingJson.text;
         String display = "<html><head><title>" + text + "</title></head><body>";
-        for(Lists list : tulingJson.list) {
+        for (Lists list : tulingJson.list) {
             String article = list.article;
             String source = list.source;
             String detailUrl = list.detailurl;
             String icon = list.icon;
             display = display + "<p><strong><a href=\"" + detailUrl + "\">" + article
                     + "</a></strong></p>";
-            if(!icon.equals("")) {
+            if (!icon.equals("")) {
                 display = display + "<img src=\"" + icon + "\"/>";
             }
         }
@@ -382,6 +411,7 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * 显示列车信息
+     *
      * @param tulingJson
      */
     public void displayTraning(TulingJson tulingJson) {
@@ -390,7 +420,7 @@ public class MainActivity extends ActionBarActivity {
         String display2 = "<html><head><title>" + text + "</title></head>"
                 + "<body><table border=1><tr><td>班次</td>" +
                 "<td>起点站</td><td>终点站</td><td>起始时间</td><td>到站时间</td>";
-        for(Lists list : tulingJson.list) {
+        for (Lists list : tulingJson.list) {
             String trainNum = list.trainnum;
             String start = list.start;
             String terminal = list.terminal;
@@ -414,6 +444,7 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * 显示航班信息
+     *
      * @param tulingJson
      */
     public void displayFight(TulingJson tulingJson) {
@@ -421,7 +452,7 @@ public class MainActivity extends ActionBarActivity {
         String display2 = "<html><head><title>" + text + "</title></head>"
                 + "<body><table border=1><tr><td>航班</td>" +
                 "<td>路线</td><td>起飞时间</td><td>到达时间</td><td>航班状态</td>";
-        for(Lists list : tulingJson.list) {
+        for (Lists list : tulingJson.list) {
             String flight = list.flight;
             String route = list.route;
             String starttime = list.starttime;
@@ -444,6 +475,7 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * 显示 菜谱、视频、小说
+     *
      * @param tulingJson
      */
     public void displaySomething(TulingJson tulingJson) {
@@ -461,12 +493,18 @@ public class MainActivity extends ActionBarActivity {
 
     /**
      * 显示酒店信息
+     *
      * @param tulingJson
      */
     public void displayHotel(TulingJson tulingJson) {
 
     }
 
+    /**
+     * 显示价格
+     *
+     * @param tulingJson
+     */
     public void displayPrice(TulingJson tulingJson) {
         String text = tulingJson.text;
         String display = text + "\n" + "点击显示结果";
@@ -477,5 +515,38 @@ public class MainActivity extends ActionBarActivity {
         bundleObject.putSerializable("TulingJson", tulingJson);
         passIntent.putExtras(bundleObject);  //传递自定义类
         startActivity(passIntent);
+    }
+
+    /**
+     * 判断网络连接是否已开
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isConnected(Context context) {
+        boolean bisConnFlag = false;
+        ConnectivityManager conManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo network = conManager.getActiveNetworkInfo();
+        if (network != null) {
+            bisConnFlag = conManager.getActiveNetworkInfo().isAvailable();
+        }
+        return bisConnFlag;
+    }
+
+
+    /**
+     * 如果网络没有打开，提示打开网络设置界面
+     *
+     * @param context
+     */
+    public void setNetworkMethod(final Context context) {
+        new AlertDialog.Builder(this).setTitle("网络设置提示").setMessage("网络连接不可用,是否进行设置?")
+                .setPositiveButton("设置", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS);
+                        context.startActivity(intent);
+                    }
+                }).setNegativeButton("取消", null).show();
     }
 }
