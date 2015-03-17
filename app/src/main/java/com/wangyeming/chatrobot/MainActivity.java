@@ -239,24 +239,38 @@ public class MainActivity extends ActionBarActivity {
                     break;
                 case "40001":
                     //key的长度错误（32位）
+                    Toast.makeText(MainActivity.this,
+                            "（系统）key的长度错误（32位）", Toast.LENGTH_SHORT).show();
                     break;
                 case "40002":
                     //请求内容为空
+                    Toast.makeText(MainActivity.this,
+                            "（系统）请求内容为空", Toast.LENGTH_SHORT).show();
                     break;
                 case "40003":
                     //key错误或帐号未激活
+                    Toast.makeText(MainActivity.this,
+                            "（系统）请求内容为空", Toast.LENGTH_SHORT).show();
                     break;
                 case "40004":
                     //当天请求次数已用完
+                    Toast.makeText(MainActivity.this,
+                            "（系统）当天请求次数已用完", Toast.LENGTH_SHORT).show();
                     break;
                 case "40005":
                     //暂不支持该功能
+                    Toast.makeText(MainActivity.this,
+                            "（系统）暂不支持该功能", Toast.LENGTH_SHORT).show();
                     break;
                 case "40006":
                     //服务器升级中
+                    Toast.makeText(MainActivity.this,
+                            "（系统）服务器升级中", Toast.LENGTH_SHORT).show();
                     break;
                 case "40007":
                     //服务器数据格式异常
+                    Toast.makeText(MainActivity.this,
+                            "（系统）服务器数据格式异常", Toast.LENGTH_SHORT).show();
                     break;
             }
         } catch (Exception e) {
