@@ -1,6 +1,7 @@
 package com.wangyeming.chatrobot;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -367,8 +368,8 @@ public class MainActivity extends ActionBarActivity {
      */
     public void displayTraning(TulingJson tulingJson) {
         String text = tulingJson.text;
-        /*
-        String display = "<html><head><title>" + text + "</title></head>"
+        String url = "";
+        String display2 = "<html><head><title>" + text + "</title></head>"
                 + "<body><table border=1><tr><td>班次</td>" +
                 "<td>起点站</td><td>终点站</td><td>起始时间</td><td>到站时间</td>";
         for(Lists list : tulingJson.list) {
@@ -379,22 +380,18 @@ public class MainActivity extends ActionBarActivity {
             String endtime = list.endtime;
             String detailUrl = list.detailurl;
             String icon = list.icon;
-            display = display + "<tr><td>" + trainNum + "</td><td>" + start + "</td><td>"
+            display2 = display2 + "<tr><td><a href=\"" + detailUrl + "\">"
+                    + trainNum + "</td><td>" + start + "</td><td>"
                     + terminal + "</td><td>" + starttime
                     + "</td><td>" + endtime + "</td>";
-        }
-        display = display + "</table></body></html>";
-        */
-        String display = "<html><head><title>" + text + "</title></head>";
-        String url = "";
-        for(Lists list : tulingJson.list) {
-            String detailUrl = list.detailurl;
             url = detailUrl;
         }
-        display = display + "<body><p><strong><a href=\"" + url + "\">点此链接</a></strong></p>"
-                + "</body></html>";
-        Log.d("wym", display);
-        displayMessage(display, true, true);//显示为html
+        display2 = display2 + "</table></body></html>";
+        Intent intent = new Intent(this, WebViewActivity.class);
+        intent.putExtra("html", display2);
+        startActivity(intent);
+        String display = text + "\n" + "点击显示结果";
+        displayMessage(display, true, false);
     }
 
     /**
@@ -403,16 +400,28 @@ public class MainActivity extends ActionBarActivity {
      */
     public void displayFight(TulingJson tulingJson) {
         String text = tulingJson.text;
-        String display = "<html><head><title>" + text + "</title></head>";
-        String url = "";
+        String display2 = "<html><head><title>" + text + "</title></head>"
+                + "<body><table border=1><tr><td>航班</td>" +
+                "<td>路线</td><td>起飞时间</td><td>到达时间</td><td>航班状态</td>";
         for(Lists list : tulingJson.list) {
+            String flight = list.flight;
+            String route = list.route;
+            String starttime = list.starttime;
+            String endtime = list.endtime;
             String detailUrl = list.detailurl;
-            url = detailUrl;
+            String state = list.state;
+            String icon = list.icon;
+            display2 = display2 + "<tr><td><a href=\"" + detailUrl + "\">"
+                    + flight + "</td><td>" + route + "</td><td>"
+                    + starttime + "</td><td>" + endtime
+                    + "</td><td>" + state + "</td>";
         }
-        display = display + "<body><p><strong><a href=\"" + url + "\">点此链接</a></strong></p>"
-                + "</body></html>";
-        Log.d("wym", display);
-        displayMessage(display, true, true);//显示为html
+        display2 = display2 + "</table></body></html>";
+        Intent intent = new Intent(this, WebViewActivity.class);
+        intent.putExtra("html", display2);
+        startActivity(intent);
+        String display = text + "\n" + "点击显示结果";
+        displayMessage(display, true, false);
     }
 
     /**
@@ -420,6 +429,12 @@ public class MainActivity extends ActionBarActivity {
      * @param tulingJson
      */
     public void displaySomething(TulingJson tulingJson) {
-
+        String text = tulingJson.text;
+        for(Lists list : tulingJson.list) {
+            String name = list.name;
+            String info = list.info;
+            String detailUrl = list.detailurl;
+            String icon = list.icon;
+        }
     }
 }

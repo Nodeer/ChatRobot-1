@@ -5,4 +5,11 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <!--button dialog-->
+    <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <!-- Customize your theme here. -->
+        <!--item name="android:background">#FFFFFF</item-->
+        <!--item name="android:windowNoTitle">false</item-->
+    </style>
+
 </resources>
