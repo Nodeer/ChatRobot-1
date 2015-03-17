@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
-        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_gravity="center"
         card_view:cardCornerRadius="4dp">
 
         <ImageView
@@ -22,18 +20,18 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_gravity="bottom"
-            android:background="#80000000" >
+            android:background="#80000000">
 
-        <TextView
-            android:id="@+id/info_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:textSize="20sp"
-            android:textColor="#fff"
-            android:text="@string/food_name"
-            android:lineSpacingMultiplier="1.5"
-            android:paddingLeft="15dp" />
+            <TextView
+                android:id="@+id/info_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:lineSpacingMultiplier="1.5"
+                android:paddingLeft="15dp"
+                android:text="@string/food_name"
+                android:textColor="#fff"
+                android:textSize="20sp" />
 
         </FrameLayout>
 
@@ -49,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#000"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
     </LinearLayout>
 

@@ -18,7 +18,7 @@ public class WebViewActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
+        if (actionBar != null) {
             //actionBar.setDisplayShowTitleEnabled(false);
             actionBar.hide();
         }

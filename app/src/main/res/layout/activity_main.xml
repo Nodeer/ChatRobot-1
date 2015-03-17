@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#FFC107"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <android.support.v7.widget.RecyclerView
@@ -15,9 +15,9 @@
 
     <include
         android:id="@+id/input_line"
+        layout="@layout/input_layout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_gravity="bottom"
-        layout="@layout/input_layout"/>
+        android:layout_gravity="bottom" />
 
 </LinearLayout>

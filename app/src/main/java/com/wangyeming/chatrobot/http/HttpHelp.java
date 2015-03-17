@@ -32,7 +32,7 @@ public class HttpHelp {
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Content-Type", "application/json")
-                .addHeader("text/json","charset=utf-8")
+                .addHeader("text/json", "charset=utf-8")
                 .build();
         Response response = client.newCall(request).execute();
         return response;

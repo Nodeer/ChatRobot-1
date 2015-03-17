@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFECB3">
+    android:background="#FFECB3"
+    android:orientation="horizontal">
     <!--android:background="@drawable/rect_shape_white"-->
 
     <LinearLayout
@@ -16,10 +16,10 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:background="@android:color/transparent"
-            android:src="@mipmap/yk"
             android:scaleType="fitXY"
-            android:layout_gravity="center"/>
+            android:src="@mipmap/yk" />
     </LinearLayout>
 
     <LinearLayout
@@ -32,39 +32,39 @@
             android:id="@+id/voice_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:background="@android:color/transparent"
-            android:src="@mipmap/sx"
             android:scaleType="fitXY"
-            android:layout_gravity="center"/>
+            android:src="@mipmap/sx" />
 
         <EditText
             android:id="@+id/input"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="5"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <ImageButton
             android:id="@+id/add_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:background="@android:color/transparent"
-            android:src="@mipmap/a61"
             android:paddingLeft="10dp"
             android:scaleType="fitXY"
-            android:layout_gravity="center" />
+            android:src="@mipmap/a61" />
 
         <Button
             android:id="@+id/send_button"
             android:layout_width="55dp"
             android:layout_height="25dp"
             android:background="#4CAF50"
+            android:gravity="center"
+            android:onClick="sendMessage"
             android:text="@string/send"
             android:textColor="#FFF"
             android:textSize="14sp"
-            android:gravity="center"
-            android:onClick="sendMessage"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </LinearLayout>
 

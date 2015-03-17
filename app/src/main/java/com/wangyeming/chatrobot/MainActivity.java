@@ -58,6 +58,29 @@ public class MainActivity extends ActionBarActivity {
     private EditText editText;
     private Button sendButton;
     private ImageButton addButton;
+    private Handler handler1 = new Handler() {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            String response = msg.obj.toString();
+            parse(response);
+        }
+    };
+
+    /**
+     * 判断网络连接是否已开
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isConnected(Context context) {
+        boolean bisConnFlag = false;
+        ConnectivityManager conManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo network = conManager.getActiveNetworkInfo();
+        if (network != null) {
+            bisConnFlag = conManager.getActiveNetworkInfo().isAvailable();
+        }
+        return bisConnFlag;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +95,6 @@ public class MainActivity extends ActionBarActivity {
             setNetworkMethod(this);
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -184,7 +206,7 @@ public class MainActivity extends ActionBarActivity {
             response = httpHelp.get(uri);
         } catch (Exception e) {
             Toast.makeText(MainActivity.this,
-                    "网络异常" , Toast.LENGTH_SHORT).show();
+                    "网络异常", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
         return response;
@@ -304,7 +326,7 @@ public class MainActivity extends ActionBarActivity {
                 String response_string = null;
                 try {
                     response_code = response.code();
-                    Log.d("wym", "response_code "+ response_code);
+                    Log.d("wym", "response_code " + response_code);
                     response_string = response.body().string();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -320,14 +342,6 @@ public class MainActivity extends ActionBarActivity {
             }
         }).start();
     }
-
-    private Handler handler1 = new Handler() {
-        @Override
-        public void handleMessage(android.os.Message msg) {
-            String response = msg.obj.toString();
-            parse(response);
-        }
-    };
 
     /**
      * 获取当前时间
@@ -531,23 +545,6 @@ public class MainActivity extends ActionBarActivity {
         passIntent.putExtras(bundleObject);  //传递自定义类
         startActivity(passIntent);
     }
-
-    /**
-     * 判断网络连接是否已开
-     *
-     * @param context
-     * @return
-     */
-    public static boolean isConnected(Context context) {
-        boolean bisConnFlag = false;
-        ConnectivityManager conManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo network = conManager.getActiveNetworkInfo();
-        if (network != null) {
-            bisConnFlag = conManager.getActiveNetworkInfo().isAvailable();
-        }
-        return bisConnFlag;
-    }
-
 
     /**
      * 如果网络没有打开，提示打开网络设置界面

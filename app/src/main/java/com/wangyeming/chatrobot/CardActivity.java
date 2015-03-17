@@ -57,7 +57,7 @@ public class CardActivity extends ActionBarActivity {
 
     public void init() {
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
+        if (actionBar != null) {
             //actionBar.setDisplayShowTitleEnabled(false);
             actionBar.hide();
         }
@@ -81,6 +81,7 @@ public class CardActivity extends ActionBarActivity {
 
     /**
      * 转存json数据
+     *
      * @param tulingJson
      */
     public void parseJson(TulingJson tulingJson) {
@@ -98,11 +99,12 @@ public class CardActivity extends ActionBarActivity {
 
     /**
      * 菜谱、视频、小说
+     *
      * @param tulingJson
      */
     public void parseFood(TulingJson tulingJson) {
         String text = tulingJson.text;
-        for(Lists list : tulingJson.list) {
+        for (Lists list : tulingJson.list) {
             Map<String, Object> foodMap = new HashMap<>();
             String name = list.name;
             String info = list.info;
@@ -119,11 +121,12 @@ public class CardActivity extends ActionBarActivity {
 
     /**
      * 价格
+     *
      * @param tulingJson
      */
     public void parsePrice(TulingJson tulingJson) {
         String text = tulingJson.text;
-        for(Lists list : tulingJson.list) {
+        for (Lists list : tulingJson.list) {
             Map<String, Object> foodMap = new HashMap<>();
             String name = list.name;
             String price = list.price;

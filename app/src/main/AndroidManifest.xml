@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wangyeming.chatrobot" >
+    package="com.wangyeming.chatrobot">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -10,10 +10,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/cat1"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,8 +23,8 @@
         <activity
             android:name=".WebViewActivity"
             android:label="@string/title_activity_web_view"
-            android:theme="@style/CustomDialogTheme"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/CustomDialogTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.wangyeming.chatrobot.MainActivity" />
@@ -32,8 +32,8 @@
         <activity
             android:name=".CardActivity"
             android:label="@string/title_activity_card"
-            android:theme="@style/CustomDialogTheme"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/CustomDialogTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.wangyeming.chatrobot.MainActivity" />

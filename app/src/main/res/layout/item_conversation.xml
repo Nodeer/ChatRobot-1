@@ -11,15 +11,14 @@
         android:layout_marginTop="5dp"
         android:orientation="horizontal">
 
-        <com.pkmmte.view.CircularImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.pkmmte.view.CircularImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/left_profile_image"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@mipmap/robot"
             app:border_color="#FFFFFF"
             app:border_width="2dp"
-            app:shadow="true"/>
+            app:shadow="true" />
 
         <TextView
             android:id="@+id/left_dialog"
@@ -75,15 +74,14 @@
             android:textColor="#000000"
             android:textSize="14sp" />
 
-        <com.pkmmte.view.CircularImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.pkmmte.view.CircularImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/right_profile_image"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@mipmap/cat2"
             app:border_color="#FFFFFF"
             app:border_width="2dp"
-            app:shadow="true"/>
+            app:shadow="true" />
 
     </LinearLayout>
 

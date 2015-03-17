@@ -25,22 +25,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     private List<Map<String, Object>> conversationDisplay = new ArrayList<>();
     private LayoutInflater mInflater;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        public View left_layout; //左布局
-        public View right_layout; //右布局
-        public CircularImageView left_imageView;  //左头像
-        public CircularImageView right_imageView;  //右头像
-        public TextView left_tv1;  //左聊天内容
-        public TextView right_tv1;  //右聊天内容
-        public TextView left_tv2;  //左日期
-        public TextView right_tv2;  //左日期
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
     public ConversationAdapter(Context context, List<Map<String, Object>> conversationDisplay) {
         mInflater = LayoutInflater.from(context);
         this.conversationDisplay = conversationDisplay;
@@ -99,6 +83,22 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     @Override
     public int getItemCount() {
         return conversationDisplay.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        public View left_layout; //左布局
+        public View right_layout; //右布局
+        public CircularImageView left_imageView;  //左头像
+        public CircularImageView right_imageView;  //右头像
+        public TextView left_tv1;  //左聊天内容
+        public TextView right_tv1;  //右聊天内容
+        public TextView left_tv2;  //左日期
+        public TextView right_tv2;  //左日期
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 
 }

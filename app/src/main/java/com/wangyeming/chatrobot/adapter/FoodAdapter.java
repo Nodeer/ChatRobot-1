@@ -19,7 +19,7 @@ import java.util.Map;
  * @author Wang
  * @data 2015/3/17
  */
-public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder>  {
+public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 
     private List<Map<String, Object>> foodDisplay = new ArrayList<>();
     private Context context;
