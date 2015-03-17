@@ -19,8 +19,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.squareup.okhttp.Response;
 import com.wangyeming.chatrobot.adapter.ConversationAdapter;
 import com.wangyeming.chatrobot.http.HttpHelp;
 import com.wangyeming.chatrobot.tuling.Tuling;
@@ -94,7 +96,6 @@ public class MainActivity extends ActionBarActivity {
         try {
             String IMSI = telephonemanager.getSubscriberId();  //获取手机国际识别码IMEI
             userId = "chatRobot" + IMSI;
-            Log.d("wym", IMSI);
         } catch (Exception e) {
             e.printStackTrace();
             Random random = new Random(100);
@@ -161,13 +162,14 @@ public class MainActivity extends ActionBarActivity {
      * @param sendMessage
      * @return
      */
-    public String getResponse(String sendMessage) {
+    public Response getResponse(String sendMessage) {
+        Log.d("wym", "message " + sendMessage);
         Tuling tuling = new Tuling();
         tuling.setInfo(sendMessage);
         tuling.setUserId(userId);
         String uri = tuling.generateUri();
-        HttpHelp httpHelp = new HttpHelp();
-        String response = "";
+        HttpHelp httpHelp = new HttpHelp(tuling);
+        Response response = null;
         try {
             response = httpHelp.get(uri);
         } catch (IOException e) {
@@ -181,6 +183,7 @@ public class MainActivity extends ActionBarActivity {
      * @param response
      */
     public void parse(String response) {
+        Log.d("wym", response);
         TulingJson tulingJson = JSON.parseObject(response, TulingJson.class);
         String code = tulingJson.code;
         switch (code) {
@@ -215,9 +218,11 @@ public class MainActivity extends ActionBarActivity {
                 break;
             case "309000":
                 //酒店
+                displayHotel(tulingJson);
                 break;
             case "311000":
                 //价格
+                displayPrice(tulingJson);
                 break;
             case "40001":
                 //key的长度错误（32位）
@@ -256,10 +261,23 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public void run() {
-                String response = getResponse(message);
-                Message message = Message.obtain();
-                message.obj = response;
-                MainActivity.this.handler1.sendMessage(message);
+                Response response = getResponse(message);
+                int response_code = 0;
+                String response_string = null;
+                try {
+                    response_code = response.code();
+                    response_string = response.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(response_code == 200) {
+                    Message message = Message.obtain();
+                    message.obj = response_string;
+                    MainActivity.this.handler1.sendMessage(message);
+                } else {
+                    Toast.makeText(MainActivity.this,
+                            "网络错误，状态码：" + response_code, Toast.LENGTH_SHORT).show();
+                }
             }
         }).start();
     }
@@ -439,5 +457,25 @@ public class MainActivity extends ActionBarActivity {
         passIntent.putExtras(bundleObject);  //传递自定义类
         startActivity(passIntent);
 
+    }
+
+    /**
+     * 显示酒店信息
+     * @param tulingJson
+     */
+    public void displayHotel(TulingJson tulingJson) {
+
+    }
+
+    public void displayPrice(TulingJson tulingJson) {
+        String text = tulingJson.text;
+        String display = text + "\n" + "点击显示结果";
+        displayMessage(display, true, false);
+        Intent passIntent = new Intent();
+        passIntent.setClass(this, CardActivity.class);
+        Bundle bundleObject = new Bundle();
+        bundleObject.putSerializable("TulingJson", tulingJson);
+        passIntent.putExtras(bundleObject);  //传递自定义类
+        startActivity(passIntent);
     }
 }

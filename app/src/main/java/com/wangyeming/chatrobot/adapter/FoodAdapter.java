@@ -43,12 +43,22 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder>  {
 
     @Override
     public void onBindViewHolder(ViewHolder vh, int i) {
+        String sort = (String) foodDisplay.get(i).get("sort");
         String name = (String) foodDisplay.get(i).get("name");
-        String info = (String) foodDisplay.get(i).get("info");
         String detailUrl = (String) foodDisplay.get(i).get("detailUrl");
         String icon = (String) foodDisplay.get(i).get("icon");
-        vh.title.setText(name);
-        vh.rawMaterial.setText(info);
+        switch (sort) {
+            case "food":
+                String info = (String) foodDisplay.get(i).get("info");
+                vh.title.setText(name);
+                vh.rawMaterial.setText(info);
+                break;
+            case "price":
+                String price = (String) foodDisplay.get(i).get("price");
+                vh.title.setText(price);
+                vh.rawMaterial.setText(name);
+                break;
+        }
         Picasso.with(context).load(icon).into(vh.pic);
         //vh.pic.setBackgroundResource(R.mipmap.tc1);
     }

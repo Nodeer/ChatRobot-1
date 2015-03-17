@@ -114,6 +114,6 @@ public class Tuling {
         if(this.getLat() != null) {
             uri = uri + "&" + "lat=" + this.getLat();
         }
-        return uri;
+        return uri.replaceAll(" ", "&nbsp");
     }
 }

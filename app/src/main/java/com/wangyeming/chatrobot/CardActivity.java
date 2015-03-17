@@ -84,6 +84,23 @@ public class CardActivity extends ActionBarActivity {
      * @param tulingJson
      */
     public void parseJson(TulingJson tulingJson) {
+        String code = tulingJson.code;
+        switch (code) {
+            case "308000":
+                parseFood(tulingJson);
+                break;
+            case "311000":
+                parsePrice(tulingJson);
+                break;
+        }
+
+    }
+
+    /**
+     * 菜谱、视频、小说
+     * @param tulingJson
+     */
+    public void parseFood(TulingJson tulingJson) {
         String text = tulingJson.text;
         for(Lists list : tulingJson.list) {
             Map<String, Object> foodMap = new HashMap<>();
@@ -95,6 +112,28 @@ public class CardActivity extends ActionBarActivity {
             foodMap.put("info", "原料：" + info);
             foodMap.put("detailUrl", detailUrl);
             foodMap.put("icon", icon);
+            foodMap.put("sort", "food");
+            foodDisplay.add(foodMap);
+        }
+    }
+
+    /**
+     * 价格
+     * @param tulingJson
+     */
+    public void parsePrice(TulingJson tulingJson) {
+        String text = tulingJson.text;
+        for(Lists list : tulingJson.list) {
+            Map<String, Object> foodMap = new HashMap<>();
+            String name = list.name;
+            String price = list.price;
+            String detailUrl = list.detailurl;
+            String icon = list.icon;
+            foodMap.put("name", name);
+            foodMap.put("price", price);
+            foodMap.put("detailUrl", detailUrl);
+            foodMap.put("icon", icon);
+            foodMap.put("sort", "price");
             foodDisplay.add(foodMap);
         }
     }

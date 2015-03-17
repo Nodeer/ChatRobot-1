@@ -28,7 +28,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:layout_weight="3"
-            android:background="@drawable/rect_shape_blue"
+            android:background="@drawable/rect_shape_cyan"
             android:text="你好，我是聊天机器人！"
             android:textColor="#FFFFFF"
             android:textSize="14sp" />
@@ -70,7 +70,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginRight="5dp"
             android:layout_weight="3"
-            android:background="@drawable/rect_shape_green"
+            android:background="@drawable/rect_shape_lime"
             android:text="你好"
             android:textColor="#000000"
             android:textSize="14sp" />

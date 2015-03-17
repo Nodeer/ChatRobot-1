@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +65,6 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     @Override
     public void onBindViewHolder(ConversationAdapter.ViewHolder vh, int i) {
         Boolean isRobot = (Boolean) conversationDisplay.get(i).get("isRobot");
-        Log.d("wym", "isRobot " + isRobot);
         String message = (String) conversationDisplay.get(i).get("message");
         String date = (String) conversationDisplay.get(i).get("date");
         int avatar = (int) conversationDisplay.get(i).get("avatar");
