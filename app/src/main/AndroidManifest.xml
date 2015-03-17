@@ -23,7 +23,20 @@
         <activity
             android:name=".WebViewActivity"
             android:label="@string/title_activity_web_view"
-            android:theme="@style/CustomDialogTheme">
+            android:theme="@style/CustomDialogTheme"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.wangyeming.chatrobot.MainActivity" />
+        </activity>
+        <activity
+            android:name=".CardActivity"
+            android:label="@string/title_activity_card"
+            android:theme="@style/CustomDialogTheme"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.wangyeming.chatrobot.MainActivity" />
         </activity>
     </application>
 

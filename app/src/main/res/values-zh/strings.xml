@@ -4,4 +4,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">设置</string>
     <string name="send">发送</string>
+    <string name="food_name">菜名</string>
+    <string name="raw_material">原材料</string>
 </resources>

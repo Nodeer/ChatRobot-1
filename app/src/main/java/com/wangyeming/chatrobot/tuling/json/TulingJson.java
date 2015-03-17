@@ -1,5 +1,6 @@
 package com.wangyeming.chatrobot.tuling.json;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import java.util.List;
  * @author Wang
  * @data 2015/3/14
  */
-public class TulingJson {
+public class TulingJson implements Serializable {
     public String code;
     public String text;
     public List<Lists> list = new ArrayList<>();

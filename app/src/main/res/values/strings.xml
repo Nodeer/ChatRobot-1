@@ -5,4 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="send">send</string>
     <string name="title_activity_web_view">WebViewActivity</string>
+    <string name="title_activity_card">CardActivity</string>
+    <string name="food_name">Food Name</string>
+    <string name="raw_material">Raw material</string>
 </resources>

@@ -1,10 +1,12 @@
 package com.wangyeming.chatrobot.tuling.json;
 
+import java.io.Serializable;
+
 /**
  * @author Wang
  * @data 2015/3/14
  */
-public class Lists {
+public class Lists implements Serializable {
     //新闻
     public String article = null;
     public String source = null;

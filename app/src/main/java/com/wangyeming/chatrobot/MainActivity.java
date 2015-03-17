@@ -430,11 +430,14 @@ public class MainActivity extends ActionBarActivity {
      */
     public void displaySomething(TulingJson tulingJson) {
         String text = tulingJson.text;
-        for(Lists list : tulingJson.list) {
-            String name = list.name;
-            String info = list.info;
-            String detailUrl = list.detailurl;
-            String icon = list.icon;
-        }
+        String display = text + "\n" + "点击显示结果";
+        displayMessage(display, true, false);
+        Intent passIntent = new Intent();
+        passIntent.setClass(this, CardActivity.class);
+        Bundle bundleObject = new Bundle();
+        bundleObject.putSerializable("TulingJson", tulingJson);
+        passIntent.putExtras(bundleObject);  //传递自定义类
+        startActivity(passIntent);
+
     }
 }
